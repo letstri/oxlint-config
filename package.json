@@ -1,0 +1,64 @@
+{
+  "name": "@letstri/oxc-config",
+  "version": "0.1.0",
+  "description": "Opinionated Oxlint and Oxfmt configs",
+  "homepage": "https://github.com/letstri/oxc-config#readme",
+  "bugs": {
+    "url": "https://github.com/letstri/oxc-config/issues"
+  },
+  "license": "MIT",
+  "author": "Valerii Strilets",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/letstri/oxc-config.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "oxlint -c oxlint.config.ts",
+    "lint:fix": "oxlint -c oxlint.config.ts --fix",
+    "format": "oxfmt -c oxfmt.config.ts",
+    "format:check": "oxfmt -c oxfmt.config.ts --check",
+    "check": "run-p lint check-types format:check",
+    "update": "taze -r -I major",
+    "prepare": "husky",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "defu": "^6.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "husky": "^9.1.7",
+    "npm-run-all2": "^9.0.2",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "taze": "^19.14.1",
+    "tsdown": "^0.22.4",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "oxfmt": ">=0.58.0",
+    "oxlint": ">=1.73.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.11.0"
+}
