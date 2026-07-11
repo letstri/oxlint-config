@@ -1,0 +1,61 @@
+import process from 'node:process'
+
+import { defineConfig as defineOxlintConfig } from 'oxlint'
+
+import { getInstalledPackages } from './utils.ts'
+
+type OxlintOptions = Parameters<typeof defineOxlintConfig>[0]
+
+const TAILWIND_PLUGIN = 'eslint-plugin-better-tailwindcss'
+
+interface TailwindOptions {
+  /**
+   * Path to the Tailwind entry CSS. Required — the plugin needs it to resolve
+   * class names.
+   */
+  entryPoint: string
+  /**
+   * Directory scanned to check the plugin is installed.
+   *
+   * @default process.cwd()
+   */
+  cwd?: string
+}
+
+/**
+ * Tailwind linting via [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
+ * Spread the result into `oxlintConfig`:
+ *
+ * ```ts
+ * export default oxlintConfig({ ...tailwind({ entryPoint: 'app/globals.css' }) })
+ * ```
+ *
+ * The plugin is an optional peer dependency — install it yourself
+ * (`pnpm add -D eslint-plugin-better-tailwindcss`). If it is missing, an error
+ * is thrown.
+ */
+export function tailwind({ entryPoint, cwd = process.cwd() }: TailwindOptions): OxlintOptions {
+  if (!getInstalledPackages(cwd).has(TAILWIND_PLUGIN)) {
+    throw new Error(
+      `[@letstri/oxc-config] Tailwind linting needs "${TAILWIND_PLUGIN}". ` +
+        `Install it: pnpm add -D ${TAILWIND_PLUGIN}`,
+    )
+  }
+
+  return defineOxlintConfig({
+    jsPlugins: [TAILWIND_PLUGIN],
+    settings: { 'better-tailwindcss': { entryPoint } },
+    rules: {
+      'better-tailwindcss/enforce-consistent-class-order': 'error',
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      // Off on purpose: its fixer overlaps enforce-consistent-class-order and the
+      // two deadlock oxlint's single-pass fixer, so neither applies.
+      'better-tailwindcss/no-unnecessary-whitespace': 'off',
+      'better-tailwindcss/enforce-canonical-classes': 'error',
+      'better-tailwindcss/no-conflicting-classes': 'error',
+      'better-tailwindcss/no-deprecated-classes': 'error',
+      'better-tailwindcss/no-duplicate-classes': 'error',
+      'better-tailwindcss/no-unknown-classes': 'error',
+    },
+  })
+}

@@ -109,7 +109,7 @@ export default oxlintConfig({
 
 ### Tailwind
 
-`tailwind(options?)` returns a config chunk for
+`tailwind({ entryPoint })` returns a config chunk for
 [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
 Spread it into `oxlintConfig`:
 
@@ -121,14 +121,14 @@ export default oxlintConfig({
 })
 ```
 
-`entryPoint` is your Tailwind entry CSS, so the plugin can resolve class names. The plugin is an **optional peer dependency** — install it yourself:
+`entryPoint` (required) is your Tailwind entry CSS, so the plugin can resolve
+class names. The plugin is an **optional peer dependency** — install it yourself:
 
 ```bash
 pnpm add -D eslint-plugin-better-tailwindcss
 ```
 
-If the plugin is missing, `tailwind()` logs a reminder and returns an empty
-config instead of crashing oxlint.
+If the plugin is missing, `tailwind()` throws with an install hint.
 
 ## Editor setup
 

@@ -10,8 +10,11 @@ config library, in the spirit of `@antfu/eslint-config`.
 
 A pnpm workspace (`pnpm-workspace.yaml`):
 
-- `src/index.ts` — the library (root package `@letstri/oxc-config`). Exports
-  `oxlintConfig()` and `oxfmtConfig()`. Build with `tsdown` → `dist/`.
+- `src/` — the library (root package `@letstri/oxc-config`). Split by concern:
+  `oxlint.ts` (`oxlintConfig` + plugin auto-detection), `oxfmt.ts`
+  (`oxfmtConfig`), `tailwind.ts` (`tailwind()`), `utils.ts` (shared
+  `getInstalledPackages`), and `index.ts` (barrel re-exporting all three).
+  Build with `tsdown` → `dist/`.
 - `oxlint.config.ts` / `oxfmt.config.ts` — the root dogfoods its own config and
   ignores `playground` (each workspace member lints/formats itself).
 - `playground/` — `@playground/next`, a Next.js app consuming the config via
