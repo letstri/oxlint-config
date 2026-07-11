@@ -17,6 +17,9 @@ pnpm add -D @letstri/oxc-config oxlint oxfmt
 
 Paste this into Claude Code, Cursor, or any coding agent to wire everything up:
 
+<details>
+<summary>Show prompt</summary>
+
 ````text
 Set up @letstri/oxc-config (oxlint + oxfmt) in this project:
 
@@ -45,6 +48,8 @@ Set up @letstri/oxc-config (oxlint + oxfmt) in this project:
 7. Add the VS Code and Zed editor settings from the @letstri/oxc-config README.
 8. Run `pnpm lint` and `pnpm format` and fix anything reported.
 ````
+
+</details>
 
 ## Usage
 
@@ -102,6 +107,9 @@ linting and `oxfmt` for formatting — replacing ESLint and Prettier.
 Install the [`oxc.oxc-vscode`](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode)
 extension.
 
+<details>
+<summary>Show VS Code config</summary>
+
 `.vscode/extensions.json`:
 
 ```json
@@ -130,9 +138,16 @@ extension.
 }
 ```
 
+</details>
+
 ### Zed
 
-Zed ships with the oxc language servers built in. `.zed/settings.json`:
+Zed ships with the oxc language servers built in.
+
+<details>
+<summary>Show Zed config</summary>
+
+`.zed/settings.json`:
 
 ```jsonc
 {
@@ -201,3 +216,5 @@ Zed ships with the oxc language servers built in. `.zed/settings.json`:
 
 Apply the same `languages` block to any other file types you want oxfmt to
 format (`JSONC`, `CSS`, `HTML`, `YAML`, …).
+
+</details>
