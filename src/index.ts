@@ -593,20 +593,20 @@ const baseOxfmtConfig = defineOxfmtConfig({
 
 const basePlugins: OxlintPlugin[] = ['import', 'unicorn', 'jsdoc', 'node', 'promise', 'oxc']
 
-const pluginToggles = {
+const TAILWIND_PLUGIN = 'eslint-plugin-better-tailwindcss'
+
+/**
+ * Map of a dependency to the oxlint plugins it enables. A plugin is registered
+ * when any of its packages is found in the nearest `package.json`.
+ */
+const pluginDetectors = {
   typescript: { packages: ['typescript'], plugins: ['typescript'] },
-  react: { packages: ['react'], plugins: ['react', 'jsx-a11y', 'react-perf'] },
+  react: { packages: ['react'], plugins: ['react', 'jsx-a11y'] },
   vue: { packages: ['vue'], plugins: ['vue'] },
   next: { packages: ['next'], plugins: ['nextjs'] },
   vitest: { packages: ['vitest'], plugins: ['vitest'] },
   jest: { packages: ['jest'], plugins: ['jest'] },
 } satisfies Record<string, { packages: string[]; plugins: OxlintPlugin[] }>
-
-type ToggleName = keyof typeof pluginToggles
-
-const tailwindConfig = defineOxlintConfig({
-  jsPlugins: ['eslint-plugin-better-tailwindcss'],
-})
 
 function getInstalledPackages(cwd: string): Set<string> {
   const names = new Set<string>()
@@ -626,53 +626,26 @@ function getInstalledPackages(cwd: string): Set<string> {
   return names
 }
 
-function resolvePlugins(options: OxlintConfigOptions, installed: Set<string>): OxlintPlugin[] {
+function resolvePlugins(cwd: string): OxlintPlugin[] {
+  const installed = getInstalledPackages(cwd)
   const plugins = [...basePlugins]
-  for (const name of Object.keys(pluginToggles) as ToggleName[]) {
-    const toggle = pluginToggles[name]
-    const enabled = options[name] ?? toggle.packages.some(pkg => installed.has(pkg))
-    if (enabled) {
-      plugins.push(...toggle.plugins)
+  for (const { packages, plugins: enabled } of Object.values(pluginDetectors)) {
+    if (packages.some(pkg => installed.has(pkg))) {
+      plugins.push(...enabled)
     }
   }
   return [...new Set(plugins)]
 }
 
-interface OxlintConfigOptions extends Partial<Record<ToggleName, boolean>> {
-  /**
-   * Enable `eslint-plugin-better-tailwindcss`. Auto-detected from a `tailwindcss`
-   * dependency; set it explicitly when Tailwind lives in a nested workspace.
-   *
-   * The plugin is an optional peer dependency — install it yourself
-   * (`pnpm add -D eslint-plugin-better-tailwindcss`). If it is missing, a warning
-   * is logged and Tailwind linting is skipped. Point the plugin at your entry
-   * CSS via `override.settings`.
-   */
-  tailwind?: boolean
-  /**
-   * Deep-merged over the base config via defu.
-   */
-  override?: OxlintOptions
-  /**
-   * Directory whose `package.json` is scanned to auto-detect plugins.
-   *
-   * @default process.cwd()
-   */
-  cwd?: string
-}
-
-interface OxfmtConfigOptions {
-  override?: OxfmtOptions
-}
-
 /**
  * Build an oxlint config.
  *
- * Framework plugins (`typescript`, `react`, `vue`, `next`, `vitest`, `jest`,
- * `tailwind`) are auto-enabled by detecting their package in the nearest
- * `package.json`. If a dependency is not found there — e.g. it lives in a nested
- * workspace like `apps/web/package.json` — its plugin stays off, so enable it
- * manually:
+ * Plugins are auto-enabled by detecting their package (`typescript`, `react`,
+ * `vue`, `next`, `vitest`, `jest`) in the nearest `package.json`. To enable a
+ * plugin whose dependency lives elsewhere — e.g. a nested workspace like
+ * `apps/web/package.json` — add it through `overrides.plugins`.
+ *
+ * `overrides` is deep-merged over the base config via defu.
  *
  * @example
  * ```ts
@@ -681,45 +654,75 @@ interface OxfmtConfigOptions {
  * ```
  * @example
  * ```ts
- * // dep lives in a nested workspace — turn the plugin on by hand
- * export default oxlintConfig({ vue: true })
+ * // enable a plugin by hand, tweak a rule
+ * export default oxlintConfig({ plugins: ['vue'], rules: { 'no-console': 'off' } })
  * ```
  * @example
  * ```ts
- * // Tailwind, pointed at the entry CSS so classes can be resolved
- * export default oxlintConfig({
- *   tailwind: true,
- *   override: {
- *     settings: { 'better-tailwindcss': { entryPoint: 'src/styles/globals.css' } },
- *   },
- * })
+ * // add Tailwind linting
+ * export default oxlintConfig({ ...tailwind('app/globals.css') })
  * ```
  */
-const TAILWIND_PLUGIN = 'eslint-plugin-better-tailwindcss'
-
-export function oxlintConfig(options: OxlintConfigOptions = {}): OxlintOptions {
-  const { override = {} } = options
-  const installed = getInstalledPackages(options.cwd ?? process.cwd())
-
-  let tailwind = options.tailwind ?? installed.has('tailwindcss')
-  if (tailwind && !installed.has(TAILWIND_PLUGIN)) {
-    // The plugin is an optional peer dependency — don't register it (oxlint
-    // would fail to load a missing JS plugin), just tell the user to add it.
-    console.warn(
-      `[@letstri/oxc-config] Tailwind linting needs "${TAILWIND_PLUGIN}". ` +
-        `Install it: pnpm add -D ${TAILWIND_PLUGIN}`,
-    )
-    tailwind = false
-  }
-
+export function oxlintConfig(overrides: OxlintOptions = {}): OxlintOptions {
   return defu(
-    override,
-    { plugins: resolvePlugins(options, installed) },
-    tailwind ? tailwindConfig : {},
+    overrides,
+    { plugins: resolvePlugins(process.cwd()) },
     baseOxlintConfig,
   ) as OxlintOptions
 }
 
-export function oxfmtConfig({ override = {} }: OxfmtConfigOptions = {}): OxfmtOptions {
-  return defu(override, baseOxfmtConfig) as OxfmtOptions
+interface TailwindOptions {
+  /**
+   * Path to the Tailwind entry CSS, so the plugin can resolve class names.
+   */
+  entryPoint?: string
+  /**
+   * Directory scanned to check the plugin is installed.
+   *
+   * @default process.cwd()
+   */
+  cwd?: string
+}
+
+/**
+ * Tailwind linting via [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
+ * Spread the result into {@link oxlintConfig}:
+ *
+ * ```ts
+ * export default oxlintConfig({ ...tailwind({ entryPoint: 'app/globals.css' }) })
+ * ```
+ *
+ * The plugin is an optional peer dependency — install it yourself
+ * (`pnpm add -D eslint-plugin-better-tailwindcss`). If it is missing, a warning
+ * is logged and an empty config is returned so oxlint does not crash.
+ */
+export function tailwind({ entryPoint, cwd = process.cwd() }: TailwindOptions = {}): OxlintOptions {
+  if (!getInstalledPackages(cwd).has(TAILWIND_PLUGIN)) {
+    console.warn(
+      `[@letstri/oxc-config] Tailwind linting needs "${TAILWIND_PLUGIN}". ` +
+        `Install it: pnpm add -D ${TAILWIND_PLUGIN}`,
+    )
+    return {}
+  }
+
+  return defineOxlintConfig({
+    jsPlugins: [TAILWIND_PLUGIN],
+    ...(entryPoint ? { settings: { 'better-tailwindcss': { entryPoint } } } : {}),
+    rules: {
+      'better-tailwindcss/enforce-consistent-class-order': 'error',
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      // Off on purpose: its fixer overlaps enforce-consistent-class-order and the
+      // two deadlock oxlint's single-pass fixer, so neither applies.
+      'better-tailwindcss/no-unnecessary-whitespace': 'off',
+      'better-tailwindcss/enforce-canonical-classes': 'error',
+      'better-tailwindcss/no-conflicting-classes': 'error',
+      'better-tailwindcss/no-deprecated-classes': 'error',
+      'better-tailwindcss/no-duplicate-classes': 'error',
+      'better-tailwindcss/no-unknown-classes': 'error',
+    },
+  })
+}
+
+export function oxfmtConfig(overrides: OxfmtOptions = {}): OxfmtOptions {
+  return defu(overrides, baseOxfmtConfig) as OxfmtOptions
 }

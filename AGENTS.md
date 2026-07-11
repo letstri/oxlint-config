@@ -28,8 +28,7 @@ the code.
 Update the README whenever you change:
 
 - the public API — `oxlintConfig` / `oxfmtConfig` signatures, options, or defaults;
-- the plugin auto-detection map or the manual toggles (`typescript`, `react`,
-  `vue`, `next`, `vitest`, `jest`, `tailwind`);
+- the plugin auto-detection map (`pluginDetectors`), or the `tailwind()` helper;
 - install steps, peer dependencies (e.g. `eslint-plugin-better-tailwindcss` is
   an optional peer the user installs themselves), or supported editors;
 - the editor setup (`.vscode/settings.json`, `.zed/settings.json`).
@@ -59,7 +58,7 @@ A husky `pre-commit` hook runs `pnpm check` — a commit fails if any task does.
 
 ## Conventions
 
-- Keep `pluginToggles` and `basePlugins` typed with `OxlintPlugin` (derived from
+- Keep `pluginDetectors` and `basePlugins` typed with `OxlintPlugin` (derived from
   oxlint's own config type) so invalid plugin names fail at compile time.
 - Framework-specific rules stay inert when their plugin is not registered —
   oxlint ignores rules for unregistered plugins. Do not gate rule blocks.

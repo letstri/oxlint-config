@@ -71,58 +71,64 @@ export default oxfmtConfig()
 
 ### Plugins
 
-Framework plugins are enabled automatically by detecting dependencies in the
-nearest `package.json` (`typescript`, `react`, `vue`, `next`, `vitest`, `jest`,
-`tailwind`). Toggle any of them manually — useful when the dependency lives in a
-nested workspace such as `apps/web/package.json`:
+Plugins are enabled automatically by detecting dependencies in the nearest
+`package.json`:
+
+| Dependency   | Plugins enabled     |
+| ------------ | ------------------- |
+| `typescript` | `typescript`        |
+| `react`      | `react`, `jsx-a11y` |
+| `vue`        | `vue`               |
+| `next`       | `nextjs`            |
+| `vitest`     | `vitest`            |
+| `jest`       | `jest`              |
+
+Detection only reads the **nearest** `package.json`. If a dependency isn't found
+there — e.g. it lives in a nested workspace like `apps/web/package.json`, or is
+hoisted somewhere the scan doesn't see — its plugin won't be enabled. Add it
+manually via `plugins`:
 
 ```ts
 export default oxlintConfig({
-  vue: true, // force on
-  jest: false, // force off
-})
-```
-
-### Tailwind
-
-`tailwind: true` enables [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss)
-(auto-detected from a `tailwindcss` dependency). The plugin is an **optional peer
-dependency** — install it yourself:
-
-```bash
-pnpm add -D eslint-plugin-better-tailwindcss
-```
-
-If Tailwind is enabled but the plugin is missing, the config logs a reminder and
-skips Tailwind linting instead of crashing. Point the plugin at your Tailwind
-entry CSS so it can resolve class names:
-
-```ts
-export default oxlintConfig({
-  tailwind: true,
-  override: {
-    settings: {
-      'better-tailwindcss': {
-        entryPoint: 'src/styles/globals.css',
-      },
-    },
-  },
+  plugins: ['vue'],
 })
 ```
 
 ### Overrides
 
-`override` is deep-merged over the base config via [defu](https://github.com/unjs/defu):
+Anything you pass to `oxlintConfig` / `oxfmtConfig` is deep-merged over the base
+config via [defu](https://github.com/unjs/defu):
 
 ```ts
 export default oxlintConfig({
-  override: {
-    rules: {
-      'no-console': 'off',
-    },
+  rules: {
+    'no-console': 'off',
   },
 })
 ```
+
+### Tailwind
+
+`tailwind(options?)` returns a config chunk for
+[`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
+Spread it into `oxlintConfig`:
+
+```ts
+import { oxlintConfig, tailwind } from '@letstri/oxc-config'
+
+export default oxlintConfig({
+  ...tailwind({ entryPoint: 'app/globals.css' }),
+})
+```
+
+`entryPoint` is your Tailwind entry CSS, so the plugin can resolve class names. The plugin is an **optional peer dependency** — install it yourself:
+
+```bash
+pnpm add -D eslint-plugin-better-tailwindcss
+```
+
+If the plugin is missing, `tailwind()` logs a reminder and returns an empty
+config instead of crashing oxlint.
 
 ## Editor setup
 

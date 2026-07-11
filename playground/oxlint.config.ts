@@ -1,11 +1,6 @@
-import { oxlintConfig } from '@letstri/oxc-config'
+import { oxlintConfig, tailwind } from '@letstri/oxc-config'
 
+// react, nextjs and typescript plugins auto-enable from this package's deps.
 export default oxlintConfig({
-  override: {
-    settings: {
-      'better-tailwindcss': {
-        entryPoint: 'app/globals.css',
-      },
-    },
-  },
+  ...tailwind({ entryPoint: 'app/globals.css' }),
 })
