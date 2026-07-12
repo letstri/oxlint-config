@@ -13,14 +13,23 @@ Opinionated, shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) and [o
 npm i -D @letstri/oxc-config oxlint oxfmt
 ```
 
-Then scaffold the config files and editor settings with the `oxc-config` CLI:
+Then scaffold everything with the `oxc-config` CLI:
 
 ```bash
-npx oxc-config config    # create oxlint.config.ts + oxfmt.config.ts
-npx oxc-config editors   # write .vscode + .zed settings
+npx oxc-config init
 ```
 
-Run `oxc-config --help` for all commands. Details: [Usage](#usage) and
+`init` prompts you to pick what to set up — oxlint config, oxfmt config, VS Code,
+Zed. Pass flags to skip the prompt (useful in CI/scripts):
+
+```bash
+npx oxc-config init --oxlint --oxfmt   # just the config files
+npx oxc-config init --vscode --zed     # just the editor settings
+```
+
+With flags, only the chosen targets run; with none in a non-interactive shell,
+all four run. Config files are skipped if they already exist (`--force` to
+overwrite); editor settings are deep-merged into any existing files. See
 [Editor setup](#editor-setup).
 
 ## AI setup prompt
@@ -157,16 +166,12 @@ If the plugin is missing, `tailwind()` throws with an install hint.
 Both editors use the official [oxc](https://oxc.rs) tooling — `oxlint` for
 linting and `oxfmt` for formatting — replacing ESLint and Prettier.
 
-The `oxc-config editors` command writes (or updates) the editor configs for you,
-deep-merging into any existing files so your other settings are kept:
+`oxc-config init` writes (or updates) the editor configs for you, deep-merging
+into any existing files so your other settings are kept:
 
 ```bash
 # both editors
-pnpm exec oxc-config editors
-
-# or just one
-pnpm exec oxc-config editors --vscode
-pnpm exec oxc-config editors --zed
+pnpm exec oxc-config init --vscode --zed
 ```
 
 It's idempotent — safe to re-run to pull the latest recommended settings.
@@ -174,13 +179,13 @@ It's idempotent — safe to re-run to pull the latest recommended settings.
 ### VS Code
 
 Install the [`oxc.oxc-vscode`](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode)
-extension (`oxc-config editors --vscode` also adds it to `.vscode/extensions.json`). The
-CLI writes `.vscode/settings.json` — oxlint as linter, oxfmt as the default
-formatter with format-on-save, and Prettier's import organization turned off.
+extension (`init --vscode` also adds it to `.vscode/extensions.json`). It writes
+`.vscode/settings.json` — oxlint as linter, oxfmt as the default formatter with
+format-on-save, and Prettier's import organization turned off.
 
 ### Zed
 
 Zed ships with the oxc language servers built in, so no extension is needed.
-`oxc-config editors --zed` writes `.zed/settings.json` — oxfmt as the formatter (with
+`init --zed` writes `.zed/settings.json` — oxfmt as the formatter (with
 `source.fixAll.oxc` on save for JS/TS) and Prettier disabled, across the file
 types oxfmt supports.
