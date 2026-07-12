@@ -10,8 +10,18 @@ Opinionated, shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) and [o
 ## Install
 
 ```bash
-pnpm add -D @letstri/oxc-config oxlint oxfmt
+npm i -D @letstri/oxc-config oxlint oxfmt
 ```
+
+Then scaffold the config files and editor settings with the `oxc-config` CLI:
+
+```bash
+npx oxc-config config    # create oxlint.config.ts + oxfmt.config.ts
+npx oxc-config editors   # write .vscode + .zed settings
+```
+
+Run `oxc-config --help` for all commands. Details: [Usage](#usage) and
+[Editor setup](#editor-setup).
 
 ## AI setup prompt
 
@@ -147,119 +157,30 @@ If the plugin is missing, `tailwind()` throws with an install hint.
 Both editors use the official [oxc](https://oxc.rs) tooling — `oxlint` for
 linting and `oxfmt` for formatting — replacing ESLint and Prettier.
 
+The `oxc-config editors` command writes (or updates) the editor configs for you,
+deep-merging into any existing files so your other settings are kept:
+
+```bash
+# both editors
+pnpm exec oxc-config editors
+
+# or just one
+pnpm exec oxc-config editors --vscode
+pnpm exec oxc-config editors --zed
+```
+
+It's idempotent — safe to re-run to pull the latest recommended settings.
+
 ### VS Code
 
 Install the [`oxc.oxc-vscode`](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode)
-extension.
-
-<details>
-<summary>Show VS Code config</summary>
-
-`.vscode/extensions.json`:
-
-```json
-{
-  "recommendations": ["oxc.oxc-vscode"]
-}
-```
-
-`.vscode/settings.json`:
-
-```jsonc
-{
-  "oxc.configPath": "oxlint.config.ts",
-  "oxc.fmt.configPath": "oxfmt.config.ts",
-  "oxc.typeAware": true,
-  "oxc.unusedDisableDirectives": "deny",
-  "oxc.enable": true,
-  "prettier.enable": false,
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "file", // oxfmt can only format whole files
-  "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "explicit",
-    "source.organizeImports": "never", // let oxfmt handle import organization
-  },
-}
-```
-
-</details>
+extension (`oxc-config editors --vscode` also adds it to `.vscode/extensions.json`). The
+CLI writes `.vscode/settings.json` — oxlint as linter, oxfmt as the default
+formatter with format-on-save, and Prettier's import organization turned off.
 
 ### Zed
 
-Zed ships with the oxc language servers built in.
-
-<details>
-<summary>Show Zed config</summary>
-
-`.zed/settings.json`:
-
-```jsonc
-{
-  "lsp": {
-    "oxlint": {
-      "initialization_options": {
-        "settings": {
-          "configPath": null,
-          "run": "onType",
-          "disableNestedConfig": false,
-          "fixKind": "safe_fix",
-          "unusedDisableDirectives": "deny",
-        },
-      },
-    },
-    "oxfmt": {
-      "initialization_options": {
-        "settings": {
-          "fmt.configPath": null,
-          "run": "onSave",
-        },
-      },
-    },
-  },
-  "languages": {
-    "TypeScript": {
-      "format_on_save": "on",
-      "prettier": { "allowed": false },
-      "language_servers": ["...", "oxlint", "oxfmt"],
-      "formatter": [
-        { "language_server": { "name": "oxfmt" } },
-        { "code_action": "source.fixAll.oxc" },
-      ],
-    },
-    "TSX": {
-      "format_on_save": "on",
-      "prettier": { "allowed": false },
-      "language_servers": ["...", "oxlint", "oxfmt"],
-      "formatter": [
-        { "language_server": { "name": "oxfmt" } },
-        { "code_action": "source.fixAll.oxc" },
-      ],
-    },
-    "JavaScript": {
-      "format_on_save": "on",
-      "prettier": { "allowed": false },
-      "language_servers": ["...", "oxlint", "oxfmt"],
-      "formatter": [
-        { "language_server": { "name": "oxfmt" } },
-        { "code_action": "source.fixAll.oxc" },
-      ],
-    },
-    "JSON": {
-      "format_on_save": "on",
-      "prettier": { "allowed": false },
-      "formatter": [{ "language_server": { "name": "oxfmt" } }],
-    },
-    "Markdown": {
-      "format_on_save": "on",
-      "prettier": { "allowed": false },
-      "formatter": [{ "language_server": { "name": "oxfmt" } }],
-    },
-  },
-}
-```
-
-Apply the same `languages` block to any other file types you want oxfmt to
-format (`JSONC`, `CSS`, `HTML`, `YAML`, …).
-
-</details>
+Zed ships with the oxc language servers built in, so no extension is needed.
+`oxc-config editors --zed` writes `.zed/settings.json` — oxfmt as the formatter (with
+`source.fixAll.oxc` on save for JS/TS) and Prettier disabled, across the file
+types oxfmt supports.

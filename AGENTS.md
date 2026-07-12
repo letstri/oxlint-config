@@ -14,7 +14,10 @@ A pnpm workspace (`pnpm-workspace.yaml`):
   `oxlint.ts` (`oxlintConfig` + plugin auto-detection), `oxfmt.ts`
   (`oxfmtConfig`), `tailwind.ts` (`tailwind()`), `utils.ts` (shared
   `getInstalledPackages`), and `index.ts` (barrel re-exporting all three).
-  Build with `tsdown` → `dist/`.
+  `cli.ts` is the `oxc-config` bin (built with [brocli](https://github.com/drizzle-team/brocli)):
+  the `config` command scaffolds `oxlint.config.ts` / `oxfmt.config.ts`, and
+  `editors` writes/deep-merges VS Code + Zed configs from the templates in
+  `editors.ts`. Two tsdown entries (`index`, `cli`) → `dist/`.
 - `oxlint.config.ts` / `oxfmt.config.ts` — the root dogfoods its own config and
   ignores `playground` (each workspace member lints/formats itself).
 - `playground/` — `@playground/next`, a Next.js app consuming the config via

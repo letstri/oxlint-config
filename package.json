@@ -1,6 +1,6 @@
 {
   "name": "@letstri/oxc-config",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Opinionated Oxlint and Oxfmt configs",
   "homepage": "https://github.com/letstri/oxc-config#readme",
   "bugs": {
@@ -11,6 +11,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/letstri/oxc-config.git"
+  },
+  "bin": {
+    "oxc-config": "./dist/cli.mjs"
   },
   "files": [
     "dist"
@@ -41,7 +44,9 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "defu": "^6.1.7"
+    "@drizzle-team/brocli": "^0.12.0",
+    "defu": "^6.1.7",
+    "jsonc-parser": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
