@@ -581,7 +581,28 @@ const baseOxlintConfig = defineOxlintConfig({
   ],
 })
 
-const basePlugins: OxlintPlugin[] = ['import', 'unicorn', 'jsdoc', 'node', 'promise', 'oxc']
+const basePlugins = [
+  'import',
+  'unicorn',
+  'jsdoc',
+  'node',
+  'promise',
+  'oxc',
+] as const satisfies readonly OxlintPlugin[]
+
+/**
+ * Plugins always enabled by the base config — excluded from the `plugins` you
+ * can add, since listing them again is redundant.
+ */
+type BasePlugin = (typeof basePlugins)[number]
+
+/**
+ * Oxlint config accepted by {@link oxlintConfig}. Same as oxlint's own config,
+ * but `plugins` can't include the always-on base plugins.
+ */
+export type OxlintConfig = Omit<NonNullable<OxlintOptions>, 'plugins'> & {
+  plugins?: Exclude<OxlintPlugin, BasePlugin>[]
+}
 
 const pluginDetectors = {
   typescript: { packages: ['typescript'], plugins: ['typescript'] },
@@ -594,7 +615,7 @@ const pluginDetectors = {
 
 function resolvePlugins(cwd: string): OxlintPlugin[] {
   const installed = getInstalledPackages(cwd)
-  const plugins = [...basePlugins]
+  const plugins: OxlintPlugin[] = [...basePlugins]
   for (const { packages, plugins: enabled } of Object.values(pluginDetectors)) {
     if (packages.some(pkg => installed.has(pkg))) {
       plugins.push(...enabled)
@@ -611,8 +632,9 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
  * plugin whose dependency lives elsewhere — e.g. a nested workspace like
  * `apps/web/package.json` — add it through `plugins`.
  *
- * Pass any number of config objects; they are deep-merged (arrays concatenated),
- * so pieces like {@link tailwind} compose without clobbering each other.
+ * Pass any number of config objects; they are deep-merged (arrays concatenated,
+ * with `plugins` de-duplicated), so pieces like {@link tailwindPlugin} compose
+ * without clobbering each other.
  *
  * @example
  * ```ts
@@ -629,15 +651,21 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
  * // compose Tailwind — its plugins merge with the ones above, not overwrite
  * export default oxlintConfig(
  *   { plugins: ['react', 'jsx-a11y'] },
- *   tailwind({ entryPoint: 'app/globals.css' }),
+ *   tailwindPlugin({ entryPoint: 'app/globals.css' }),
  * )
  * ```
  */
-export function oxlintConfig(...overrides: OxlintOptions[]): OxlintOptions {
-  return defu(
+export function oxlintConfig(...overrides: OxlintConfig[]): OxlintOptions {
+  const merged = defu(
     {},
     ...overrides,
     { plugins: resolvePlugins(process.cwd()) },
     baseOxlintConfig,
   ) as OxlintOptions
+
+  if (merged?.plugins) {
+    merged.plugins = [...new Set(merged.plugins)]
+  }
+
+  return merged
 }

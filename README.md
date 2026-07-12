@@ -88,16 +88,16 @@ export default oxlintConfig({ rules: { 'no-console': 'off' } }, { plugins: ['vue
 
 ### Tailwind
 
-`tailwind({ entryPoint })` returns a config chunk for
+`tailwindPlugin({ entryPoint })` returns a config chunk for
 [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
 Pass it as an argument to `oxlintConfig`:
 
 ```ts
-import { oxlintConfig, tailwind } from '@letstri/oxc-config'
+import { oxlintConfig, tailwindPlugin } from '@letstri/oxc-config'
 
 export default oxlintConfig(
   { plugins: ['react', 'jsx-a11y'] },
-  tailwind({ entryPoint: 'app/globals.css' }),
+  tailwindPlugin({ entryPoint: 'app/globals.css' }),
 )
 ```
 
@@ -112,7 +112,7 @@ Options:
   a component library generates that the plugin can't resolve):
 
   ```ts
-  tailwind({ entryPoint: 'app/globals.css', ignoreClasses: ['toaster'] })
+  tailwindPlugin({ entryPoint: 'app/globals.css', ignoreClasses: ['toaster'] })
   ```
 
 The plugin is an **optional peer dependency** — install it yourself:
@@ -121,7 +121,7 @@ The plugin is an **optional peer dependency** — install it yourself:
 pnpm add -D eslint-plugin-better-tailwindcss
 ```
 
-If the plugin is missing, `tailwind()` throws with an install hint.
+If the plugin is missing, `tailwindPlugin()` throws with an install hint.
 
 ## Editor setup
 

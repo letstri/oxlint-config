@@ -12,7 +12,7 @@ A pnpm workspace (`pnpm-workspace.yaml`):
 
 - `src/` — the library (root package `@letstri/oxc-config`). Split by concern:
   `oxlint.ts` (`oxlintConfig` + plugin auto-detection), `oxfmt.ts`
-  (`oxfmtConfig`), `tailwind.ts` (`tailwind()`), `utils.ts` (shared
+  (`oxfmtConfig`), `tailwind.ts` (`tailwindPlugin()`), `utils.ts` (shared
   `getInstalledPackages`), and `index.ts` (barrel re-exporting all three).
   `cli.ts` is the `oxc-config` bin — a single `init` command (hand-parsed argv,
   no CLI framework) that scaffolds the TS configs and deep-merges the VS Code +
@@ -37,7 +37,7 @@ the code.
 Update the README whenever you change:
 
 - the public API — `oxlintConfig` / `oxfmtConfig` signatures, options, or defaults;
-- the plugin auto-detection map (`pluginDetectors`), or the `tailwind()` helper;
+- the plugin auto-detection map (`pluginDetectors`), or the `tailwindPlugin()` helper;
 - install steps, peer dependencies (e.g. `eslint-plugin-better-tailwindcss` is
   an optional peer the user installs themselves), or supported editors;
 - the editor setup (`.vscode/settings.json`, `.zed/settings.json`).

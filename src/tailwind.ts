@@ -2,9 +2,8 @@ import process from 'node:process'
 
 import { defineConfig as defineOxlintConfig } from 'oxlint'
 
+import type { OxlintConfig } from './oxlint.ts'
 import { getInstalledPackages } from './utils.ts'
-
-type OxlintOptions = Parameters<typeof defineOxlintConfig>[0]
 
 const TAILWIND_PLUGIN = 'eslint-plugin-better-tailwindcss'
 
@@ -32,7 +31,7 @@ interface TailwindOptions {
  * Pass the result as an argument to `oxlintConfig`:
  *
  * ```ts
- * export default oxlintConfig(tailwind({
+ * export default oxlintConfig(tailwindPlugin({
  *   entryPoint: 'app/globals.css',
  *   ignoreClasses: ['toaster'],
  * }))
@@ -42,11 +41,11 @@ interface TailwindOptions {
  * (`pnpm add -D eslint-plugin-better-tailwindcss`). If it is missing, an error
  * is thrown.
  */
-export function tailwind({
+export function tailwindPlugin({
   entryPoint,
   ignoreClasses = [],
   cwd = process.cwd(),
-}: TailwindOptions): OxlintOptions {
+}: TailwindOptions): OxlintConfig {
   if (!getInstalledPackages(cwd).has(TAILWIND_PLUGIN)) {
     throw new Error(
       `[@letstri/oxc-config] Tailwind linting needs "${TAILWIND_PLUGIN}". ` +
