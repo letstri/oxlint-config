@@ -4,6 +4,7 @@ import { defineConfig as defineOxfmtConfig } from 'oxfmt'
 type OxfmtOptions = Parameters<typeof defineOxfmtConfig>[0]
 
 const baseOxfmtConfig = defineOxfmtConfig({
+  printWidth: 100,
   singleQuote: true,
   semi: false,
   arrowParens: 'avoid',
