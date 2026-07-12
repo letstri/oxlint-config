@@ -121,9 +121,20 @@ export default oxlintConfig(
 ```
 
 Because arguments are merged (not spread), Tailwind's plugins combine with the
-ones above rather than overwriting them. `entryPoint` (required) is your Tailwind
-entry CSS, so the plugin can resolve class names. The plugin is an **optional
-peer dependency** — install it yourself:
+ones above rather than overwriting them.
+
+Options:
+
+- `entryPoint` (required) — your Tailwind entry CSS, so the plugin can resolve
+  class names.
+- `ignoreClasses` — class names to exempt from `no-unknown-classes` (e.g. classes
+  a component library generates that the plugin can't resolve):
+
+  ```ts
+  tailwind({ entryPoint: 'app/globals.css', ignoreClasses: ['toaster'] })
+  ```
+
+The plugin is an **optional peer dependency** — install it yourself:
 
 ```bash
 pnpm add -D eslint-plugin-better-tailwindcss
