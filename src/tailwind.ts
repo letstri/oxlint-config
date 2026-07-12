@@ -24,10 +24,10 @@ interface TailwindOptions {
 
 /**
  * Tailwind linting via [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
- * Spread the result into `oxlintConfig`:
+ * Pass the result as an argument to `oxlintConfig`:
  *
  * ```ts
- * export default oxlintConfig({ ...tailwind({ entryPoint: 'app/globals.css' }) })
+ * export default oxlintConfig(tailwind({ entryPoint: 'app/globals.css' }))
  * ```
  *
  * The plugin is an optional peer dependency — install it yourself

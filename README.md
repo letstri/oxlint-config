@@ -96,33 +96,34 @@ export default oxlintConfig({
 
 ### Overrides
 
-Anything you pass to `oxlintConfig` / `oxfmtConfig` is deep-merged over the base
-config via [defu](https://github.com/unjs/defu):
+`oxlintConfig` / `oxfmtConfig` accept **any number of config objects**, all
+deep-merged over the base config via [defu](https://github.com/unjs/defu) (arrays
+are concatenated, so plugins from different pieces combine instead of
+overwriting):
 
 ```ts
-export default oxlintConfig({
-  rules: {
-    'no-console': 'off',
-  },
-})
+export default oxlintConfig({ rules: { 'no-console': 'off' } }, { plugins: ['vue'] })
 ```
 
 ### Tailwind
 
 `tailwind({ entryPoint })` returns a config chunk for
 [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss).
-Spread it into `oxlintConfig`:
+Pass it as an argument to `oxlintConfig`:
 
 ```ts
 import { oxlintConfig, tailwind } from '@letstri/oxc-config'
 
-export default oxlintConfig({
-  ...tailwind({ entryPoint: 'app/globals.css' }),
-})
+export default oxlintConfig(
+  { plugins: ['react', 'jsx-a11y'] },
+  tailwind({ entryPoint: 'app/globals.css' }),
+)
 ```
 
-`entryPoint` (required) is your Tailwind entry CSS, so the plugin can resolve
-class names. The plugin is an **optional peer dependency** — install it yourself:
+Because arguments are merged (not spread), Tailwind's plugins combine with the
+ones above rather than overwriting them. `entryPoint` (required) is your Tailwind
+entry CSS, so the plugin can resolve class names. The plugin is an **optional
+peer dependency** — install it yourself:
 
 ```bash
 pnpm add -D eslint-plugin-better-tailwindcss

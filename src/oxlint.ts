@@ -609,7 +609,10 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
  * Plugins are auto-enabled by detecting their package (`typescript`, `react`,
  * `vue`, `next`, `vitest`, `jest`) in the nearest `package.json`. To enable a
  * plugin whose dependency lives elsewhere — e.g. a nested workspace like
- * `apps/web/package.json` — add it through `overrides.plugins`.
+ * `apps/web/package.json` — add it through `plugins`.
+ *
+ * Pass any number of config objects; they are deep-merged (arrays concatenated),
+ * so pieces like {@link tailwind} compose without clobbering each other.
  *
  * @example
  * ```ts
@@ -623,13 +626,17 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
  * ```
  * @example
  * ```ts
- * // add Tailwind linting
- * export default oxlintConfig({ ...tailwind({ entryPoint: 'app/globals.css' }) })
+ * // compose Tailwind — its plugins merge with the ones above, not overwrite
+ * export default oxlintConfig(
+ *   { plugins: ['react', 'jsx-a11y'] },
+ *   tailwind({ entryPoint: 'app/globals.css' }),
+ * )
  * ```
  */
-export function oxlintConfig(overrides: OxlintOptions = {}): OxlintOptions {
+export function oxlintConfig(...overrides: OxlintOptions[]): OxlintOptions {
   return defu(
-    overrides,
+    {},
+    ...overrides,
     { plugins: resolvePlugins(process.cwd()) },
     baseOxlintConfig,
   ) as OxlintOptions
