@@ -32,44 +32,6 @@ all four run. Config files are skipped if they already exist (`--force` to
 overwrite); editor settings are deep-merged into any existing files. See
 [Editor setup](#editor-setup).
 
-## AI setup prompt
-
-Paste this into Claude Code, Cursor, or any coding agent to wire everything up:
-
-<details>
-<summary>Show prompt</summary>
-
-````text
-Set up @letstri/oxc-config (oxlint + oxfmt) in this project:
-
-1. Install dev deps: `@letstri/oxc-config oxlint oxfmt`.
-2. Remove ESLint and Prettier: their configs, deps, and scripts.
-3. Create `oxlint.config.ts`:
-   ```ts
-   import { oxlintConfig } from '@letstri/oxc-config'
-
-   export default oxlintConfig()
-   ```
-4. Create `oxfmt.config.ts`:
-   ```ts
-   import { oxfmtConfig } from '@letstri/oxc-config'
-
-   export default oxfmtConfig()
-   ```
-5. Add package.json scripts:
-   - "lint": "oxlint"
-   - "lint:fix": "oxlint --fix"
-   - "format": "oxfmt"
-   - "format:check": "oxfmt --check"
-6. Framework plugins auto-enable from the nearest package.json. If a framework
-   dep (react/vue/next/vitest/jest/typescript) lives in a nested workspace,
-   enable it manually, e.g. `oxlintConfig({ plugins: ['vue'] })`.
-7. Add the VS Code and Zed editor settings from the @letstri/oxc-config README.
-8. Run `pnpm lint` and `pnpm format` and fix anything reported.
-````
-
-</details>
-
 ## Usage
 
 `oxlint.config.ts`:
