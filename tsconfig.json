@@ -1,17 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "lib": ["ESNext"],
-    "types": ["node"],
-    "strict": true,
-    "declaration": true,
-    "allowImportingTsExtensions": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true
-  },
-  "include": ["src", "tsdown.config.ts"]
+  "extends": "./tsconfig.base.json",
+  "include": ["oxlint.config.ts", "oxfmt.config.ts"]
 }

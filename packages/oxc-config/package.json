@@ -1,0 +1,65 @@
+{
+  "name": "@letstri/oxc-config",
+  "version": "0.7.1",
+  "description": "Opinionated Oxlint and Oxfmt configs",
+  "homepage": "https://github.com/letstri/oxc-config#readme",
+  "bugs": {
+    "url": "https://github.com/letstri/oxc-config/issues"
+  },
+  "license": "MIT",
+  "author": "Valerii Strilets",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/letstri/oxc-config.git",
+    "directory": "packages/oxc-config"
+  },
+  "bin": {
+    "oxc-config": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "check-types": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "defu": "^6.1.7",
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "tsdown": "^0.22.4",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "oxfmt": ">=0.58.0",
+    "oxlint": ">=1.73.0",
+    "oxlint-tailwindcss": ">=1"
+  },
+  "peerDependenciesMeta": {
+    "oxlint-tailwindcss": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

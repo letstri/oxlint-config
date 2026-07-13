@@ -91,8 +91,7 @@ const baseOxlintConfig = defineOxlintConfig({
     '**/.nitro/**/*',
     '**/.output/**/*',
     '**/.source/**/*',
-    '**/dist-electron/**/*',
-    '**/dist-desktop/**/*',
+    '**/dist-*/**/*',
     '**/playwright-report/**/*',
     '**/test-results/**/*',
     '**/.types/**/*',
@@ -583,17 +582,11 @@ const baseOxlintConfig = defineOxlintConfig({
 
 const basePlugins = [
   'import',
-  'unicorn',
   'jsdoc',
   'node',
   'promise',
-  'oxc',
 ] as const satisfies readonly OxlintPlugin[]
 
-/**
- * Plugins always enabled by the base config — excluded from the `plugins` you
- * can add, since listing them again is redundant.
- */
 type BasePlugin = (typeof basePlugins)[number]
 
 /**

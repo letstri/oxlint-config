@@ -1,4 +1,4 @@
-import { oxlintConfig, tailwindPlugin } from './src/index.ts'
+import { oxlintConfig, tailwindPlugin } from './packages/oxc-config/src/index.ts'
 
 export default oxlintConfig(
   tailwindPlugin({
