@@ -55,11 +55,12 @@ without re-verifying it.
   `settings`** — which breaks `tailwindConfig()`, whose `entryPoint` lives there.
   Both entry points export a function named `config`; they never collide, being on
   different specifiers.
-- **The config is flat — one `rules` block, no `overrides`.** oxlint ignores extglob
-  patterns (`?([cm])ts`) in `overrides.files`, so such a block never matches and
-  every rule in it is dead. Plain globs (`**/*.ts`, `**/e2e/**`) *do* match, so an
-  override is possible — but prove the glob matches first: confirm the rule is
-  suppressed **and** unrelated rules still fire there. Note `overrides.plugins`
+- **Keep the config flat — one `rules` block.** oxlint ignores extglob patterns
+  (`?([cm])ts`) in `overrides.files`, so such a block never matches and every rule
+  in it is dead. Plain globs *do* match: the only override is `**/*.cjs`, which
+  turns off `typescript/no-require-imports`. Before adding another, prove the glob
+  matches: confirm the rule is suppressed **and** unrelated rules still fire there.
+  Note `overrides.plugins`
   *replaces* the base plugin list rather than subtracting from it, and that list is
   only known after runtime detection — so a plugin-scoping override must be built
   inside `config()`, not `baseOxlintConfig`.

@@ -354,6 +354,14 @@ const baseOxlintConfig = defineOxlintConfig({
     'typescript/prefer-literal-enum-member': 'error',
     'typescript/triple-slash-reference': 'off',
   },
+  overrides: [
+    {
+      files: ['**/*.cjs'],
+      rules: {
+        'typescript/no-require-imports': 'off',
+      },
+    },
+  ],
 })
 
 const basePlugins = [
