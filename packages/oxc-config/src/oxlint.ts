@@ -302,7 +302,13 @@ const baseOxlintConfig = defineOxlintConfig({
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/prefer-tag-over-role': 'warn',
     'react/rules-of-hooks': 'error',
-    'react/exhaustive-deps': 'error',
+    'react/exhaustive-deps': [
+      'error',
+      {
+        additionalHooks:
+          '(useIsomorphicLayoutEffect|useIsomorphicEffect|useUpdateEffect|useUpdateLayoutEffect|useDeepCompareEffect|useDeepCompareLayoutEffect|useDeepCompareEffectNoCheck|useShallowCompareEffect|useCustomCompareEffect|useMountEffect|useMountedEffect|useAsyncEffect|useDebounceEffect|useThrottleEffect|useEnhancedEffect)',
+      },
+    ],
     'typescript/no-explicit-any': 'error',
   },
   overrides: [
