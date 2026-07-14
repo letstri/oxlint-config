@@ -1,11 +1,11 @@
 import { defu } from 'defu'
-import { defineConfig as defineOxfmtConfig } from 'oxfmt'
+import { defineConfig } from 'oxfmt'
 
 import { ignorePatterns } from './ignores.ts'
 
-type OxfmtOptions = Parameters<typeof defineOxfmtConfig>[0]
+type OxfmtOptions = Parameters<typeof defineConfig>[0]
 
-const baseOxfmtConfig = defineOxfmtConfig({
+const baseConfig = defineConfig({
   printWidth: 100,
   singleQuote: true,
   semi: false,
@@ -15,7 +15,6 @@ const baseOxfmtConfig = defineOxfmtConfig({
   ignorePatterns,
 })
 
-/** Configs are deep-merged over the base via defu. */
-export function config(...overrides: OxfmtOptions[]): OxfmtOptions {
-  return defu({}, ...overrides, baseOxfmtConfig) as OxfmtOptions
+export function config(...configs: OxfmtOptions[]): OxfmtOptions {
+  return defu({}, ...configs, baseConfig) as OxfmtOptions
 }

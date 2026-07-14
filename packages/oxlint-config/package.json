@@ -1,6 +1,6 @@
 {
   "name": "@letstri/oxlint-config",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Opinionated Oxlint and Oxfmt configs",
   "homepage": "https://github.com/letstri/oxlint-config#readme",
   "bugs": {

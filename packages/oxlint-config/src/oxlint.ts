@@ -1,15 +1,15 @@
 import process from 'node:process'
 
 import { defu } from 'defu'
-import { defineConfig as defineOxlintConfig } from 'oxlint'
+import { defineConfig } from 'oxlint'
 
 import { ignorePatterns } from './ignores.ts'
 import { getInstalledPackages } from './utils.ts'
 
-type OxlintOptions = Parameters<typeof defineOxlintConfig>[0]
+type OxlintOptions = Parameters<typeof defineConfig>[0]
 type OxlintPlugin = NonNullable<NonNullable<OxlintOptions>['plugins']>[number]
 
-const baseOxlintConfig = defineOxlintConfig({
+const baseConfig = defineConfig({
   categories: {
     correctness: 'error',
     suspicious: 'warn',
@@ -241,8 +241,6 @@ const baseOxlintConfig = defineOxlintConfig({
     'vars-on-top': 'error',
     'yoda': ['error', 'never'],
     'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
-    // Bundler query suffixes (`./x?worker`, `?url`, `?raw`) resolve to the
-    // underlying file, which has no default export — always a false positive.
     'import/default': 'off',
     'import/first': 'error',
     'import/no-duplicates': 'error',
@@ -271,13 +269,7 @@ const baseOxlintConfig = defineOxlintConfig({
     'react/react-in-jsx-scope': 'off',
     'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
     'react/rules-of-hooks': 'error',
-    'react/exhaustive-deps': [
-      'error',
-      {
-        additionalHooks:
-          '(useIsomorphicLayoutEffect|useIsomorphicEffect|useUpdateEffect|useUpdateLayoutEffect|useDeepCompareEffect|useDeepCompareLayoutEffect|useDeepCompareEffectNoCheck|useShallowCompareEffect|useCustomCompareEffect|useMountEffect|useMountedEffect|useAsyncEffect|useDebounceEffect|useThrottleEffect|useEnhancedEffect)',
-      },
-    ],
+    'react/exhaustive-deps': 'error',
     'typescript/no-explicit-any': 'error',
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
@@ -364,12 +356,6 @@ const baseOxlintConfig = defineOxlintConfig({
         'typescript/no-require-imports': 'off',
       },
     },
-    {
-      files: ['**/src/routes/**'],
-      rules: {
-        'react/only-export-components': ['error', { allowExportNames: ['Route'] }],
-      },
-    },
   ],
 })
 
@@ -408,18 +394,12 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
   return [...new Set(plugins)]
 }
 
-/**
- * Plugins are auto-enabled from the nearest `package.json`; pass `plugins` for
- * one whose dependency lives elsewhere (e.g. `apps/web/package.json`). Configs
- * are deep-merged — arrays concatenated, `plugins` de-duplicated — so chunks like
- * `tailwindConfig()` compose instead of clobbering each other.
- */
 export function config(...configs: OxlintConfig[]): OxlintOptions {
   const merged = defu(
     {},
     ...configs,
     { plugins: resolvePlugins(process.cwd()) },
-    baseOxlintConfig,
+    baseConfig,
   ) as OxlintOptions
 
   if (merged?.plugins) {
