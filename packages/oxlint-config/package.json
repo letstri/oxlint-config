@@ -2,15 +2,15 @@
   "name": "@letstri/oxlint-config",
   "version": "1.0.0",
   "description": "Opinionated Oxlint and Oxfmt configs",
-  "homepage": "https://github.com/letstri/oxc-config#readme",
+  "homepage": "https://github.com/letstri/oxlint-config#readme",
   "bugs": {
-    "url": "https://github.com/letstri/oxc-config/issues"
+    "url": "https://github.com/letstri/oxlint-config/issues"
   },
   "license": "MIT",
   "author": "Valerii Strilets",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/letstri/oxc-config.git",
+    "url": "git+https://github.com/letstri/oxlint-config.git",
     "directory": "packages/oxlint-config"
   },
   "bin": {

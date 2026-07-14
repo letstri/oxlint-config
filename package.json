@@ -6,7 +6,7 @@
   "author": "Valerii Strilets",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/letstri/oxc-config.git"
+    "url": "git+https://github.com/letstri/oxlint-config.git"
   },
   "type": "module",
   "scripts": {
