@@ -37,18 +37,8 @@ interface TailwindOptions {
 }
 
 /**
- * Tailwind v4 linting via [`oxlint-tailwindcss`](https://github.com/sergioazoc/oxlint-tailwindcss).
- * Pass the result as an argument to `config`:
- *
- * ```ts
- * export default config(tailwindConfig({
- *   entryPoint: 'app/globals.css',
- *   ignoreClasses: ['toaster'],
- * }))
- * ```
- *
- * The plugin is an optional peer dependency — install it yourself
- * (`pnpm add -D oxlint-tailwindcss`). If it is missing, an error is thrown.
+ * Tailwind v4 linting via [`oxlint-tailwindcss`](https://github.com/sergioazoc/oxlint-tailwindcss),
+ * an optional peer dependency — throws if it is not installed.
  */
 export function tailwindConfig({
   entryPoint,

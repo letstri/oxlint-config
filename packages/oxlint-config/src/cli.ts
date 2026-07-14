@@ -40,7 +40,6 @@ function writeConfig(path: string, content: string, force: boolean): string {
   return existed ? 'overwritten' : 'created'
 }
 
-// Both entries export `config`; only the specifier differs.
 const SPECIFIER = {
   oxlint: '@letstri/oxlint-config',
   oxfmt: '@letstri/oxlint-config/oxfmt',

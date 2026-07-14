@@ -366,10 +366,7 @@ const basePlugins = [
 
 type BasePlugin = (typeof basePlugins)[number]
 
-/**
- * Oxlint config accepted by {@link config}. Same as oxlint's own config,
- * but `plugins` can't include the always-on base plugins.
- */
+/** Oxlint's config, minus the always-on base plugins — callers can't set those. */
 export type OxlintConfig = Omit<NonNullable<OxlintOptions>, 'plugins'> & {
   plugins?: Exclude<OxlintPlugin, BasePlugin>[]
 }
@@ -395,35 +392,10 @@ function resolvePlugins(cwd: string): OxlintPlugin[] {
 }
 
 /**
- * Build an oxlint config.
- *
- * Plugins are auto-enabled by detecting their package (`typescript`, `react`,
- * `vue`, `next`, `vitest`, `jest`) in the nearest `package.json`. To enable a
- * plugin whose dependency lives elsewhere — e.g. a nested workspace like
- * `apps/web/package.json` — add it through `plugins`.
- *
- * Pass any number of config objects; they are deep-merged (arrays concatenated,
- * with `plugins` de-duplicated), so pieces like {@link tailwindPlugin} compose
- * without clobbering each other.
- *
- * @example
- * ```ts
- * // auto-detect from the current package.json
- * export default config()
- * ```
- * @example
- * ```ts
- * // enable a plugin by hand, tweak a rule
- * export default config({ plugins: ['vue'], rules: { 'no-console': 'off' } })
- * ```
- * @example
- * ```ts
- * // compose Tailwind — its plugins merge with the ones above, not overwrite
- * export default config(
- *   { plugins: ['react', 'jsx-a11y'] },
- *   tailwindPlugin({ entryPoint: 'app/globals.css' }),
- * )
- * ```
+ * Plugins are auto-enabled from the nearest `package.json`; pass `plugins` for
+ * one whose dependency lives elsewhere (e.g. `apps/web/package.json`). Configs
+ * are deep-merged — arrays concatenated, `plugins` de-duplicated — so chunks like
+ * `tailwindConfig()` compose instead of clobbering each other.
  */
 export function config(...configs: OxlintConfig[]): OxlintOptions {
   const merged = defu(

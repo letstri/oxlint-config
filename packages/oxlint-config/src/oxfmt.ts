@@ -15,10 +15,7 @@ const baseOxfmtConfig = defineOxfmtConfig({
   ignorePatterns,
 })
 
-/**
- * Build an oxfmt config. Pass any number of config objects; they are deep-merged
- * over the base config via defu.
- */
+/** Configs are deep-merged over the base via defu. */
 export function config(...overrides: OxfmtOptions[]): OxfmtOptions {
   return defu({}, ...overrides, baseOxfmtConfig) as OxfmtOptions
 }
