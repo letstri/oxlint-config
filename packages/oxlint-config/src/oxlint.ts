@@ -364,6 +364,12 @@ const baseOxlintConfig = defineOxlintConfig({
         'typescript/no-require-imports': 'off',
       },
     },
+    {
+      files: ['**/src/routes/**'],
+      rules: {
+        'react/only-export-components': ['error', { allowExportNames: ['Route'] }],
+      },
+    },
   ],
 })
 
