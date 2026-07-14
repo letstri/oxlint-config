@@ -241,6 +241,9 @@ const baseOxlintConfig = defineOxlintConfig({
     'vars-on-top': 'error',
     'yoda': ['error', 'never'],
     'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    // Bundler query suffixes (`./x?worker`, `?url`, `?raw`) resolve to the
+    // underlying file, which has no default export — always a false positive.
+    'import/default': 'off',
     'import/first': 'error',
     'import/no-duplicates': 'error',
     'import/no-mutable-exports': 'error',
