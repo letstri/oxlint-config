@@ -89,6 +89,10 @@ workflow runs `pnpm -r publish`.
 
 - Keep `pluginDetectors` and `basePlugins` typed with `OxlintPlugin` (derived from
   oxlint's own config type) so invalid plugin names fail at compile time.
+- Ignore globs live once in `src/ignores.ts` and feed both `oxlintConfig` and
+  `oxfmtConfig`, so lint and format skip the same paths (incl. `**/*.md`,
+  `**/skills`, and AI-assistant configs like `.cursor`/`.windsurf`/`AGENTS.md`).
+  Edit that file, not the individual configs.
 - Framework-specific rules stay inert when their plugin is not registered —
   oxlint ignores rules for unregistered plugins. Do not gate rule blocks.
 - Formatting/lint style is defined by this repo's own config. Run `pnpm format`
