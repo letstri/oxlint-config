@@ -235,7 +235,7 @@ const baseOxlintConfig = defineOxlintConfig({
     'no-underscore-dangle': [
       'warn',
       {
-        allow: ['__filename', '__dirname', '_url', '_URL'],
+        allow: ['__filename', '__dirname'],
       },
     ],
     'no-unexpected-multiline': 'error',
@@ -355,7 +355,7 @@ const baseOxlintConfig = defineOxlintConfig({
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/prefer-tag-over-role': 'warn',
     'react/rules-of-hooks': 'error',
-    'react/exhaustive-deps': ['warn', { additionalHooks: '(useMountedEffect)' }],
+    'react/exhaustive-deps': 'error',
     'typescript/no-explicit-any': 'error',
   },
   overrides: [
