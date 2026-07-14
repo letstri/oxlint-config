@@ -299,7 +299,7 @@ const baseOxlintConfig = defineOxlintConfig({
     'jsx-a11y/no-noninteractive-tabindex': 'warn',
     'jsx-a11y/no-redundant-roles': 'warn',
     'jsx-a11y/no-static-element-interactions': 'warn',
-    'jsx-a11y/prefer-tag-over-role': 'warn',
+    'jsx-a11y/prefer-tag-over-role': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
     'react/rules-of-hooks': 'error',
