@@ -11,8 +11,6 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "build": "pnpm -r run build",
-    "dev": "pnpm -r --parallel run dev",
     "check-types": "pnpm -r run check-types",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",

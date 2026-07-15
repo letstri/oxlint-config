@@ -1,5 +1,5 @@
 import { config } from './packages/oxlint-config/src/index.ts'
-import { tailwindConfig } from './packages/oxlint-config/src/tailwind.ts'
+import { tailwindConfig } from './packages/oxlint-config/src/plugins/tailwind.ts'
 
 export default config(
   tailwindConfig({

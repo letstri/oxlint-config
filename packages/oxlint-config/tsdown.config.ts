@@ -2,7 +2,12 @@ import { defineConfig } from 'tsdown'
 
 export default defineConfig({
   name: 'oxlint-config',
-  entry: ['./src/index.ts', './src/cli.ts', './src/oxfmt.ts', './src/tailwind.ts'],
+  entry: {
+    index: './src/index.ts',
+    cli: './src/cli/index.ts',
+    oxfmt: './src/oxfmt.ts',
+    tailwind: './src/plugins/tailwind.ts',
+  },
   dts: {
     build: true,
   },

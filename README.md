@@ -15,9 +15,14 @@ npx oxlint-config init
 ```
 
 `init` prompts for what to set up. Flags skip the prompt (`--oxlint`, `--oxfmt`,
-`--vscode`, `--zed`); with no flags in a non-interactive shell it sets up
-everything. Existing config files are kept unless you pass `--force`; editor
-settings are deep-merged into your current ones.
+`--tailwind`, `--vscode`, `--zed`); with no flags in a non-interactive shell it
+sets up everything. Existing config files are kept unless you pass `--force`;
+editor settings are deep-merged into your current ones.
+
+If `oxlint`, `oxfmt` (or `oxlint-tailwindcss`, when you add Tailwind) are missing
+from the project, `init` offers to install them with your package manager
+(detected from the lockfile). `--tailwind` scaffolds the oxlint config with
+`tailwindConfig()` and asks for your Tailwind entry CSS path.
 
 ### Editor extensions
 

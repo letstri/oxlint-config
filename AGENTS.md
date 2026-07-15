@@ -9,22 +9,25 @@ that owns the shared tooling and orchestrates with `pnpm -r`.
 
 - `packages/oxlint-config/` — `@letstri/oxlint-config`, the only published package.
   `index.ts` exports **only** `config` (from `oxlint.ts`). Two modules are kept off
-  the barrel and shipped as subpaths: `oxfmt.ts` → `/oxfmt`, `tailwind.ts` → `/tailwind`.
-  `cli.ts` is the `oxlint-config` bin (`init`). Its tsconfig is self-contained; there
-  is no root `tsconfig`.
-  A new subpath needs a tsdown entry **and** an `exports` entry — and `cli.ts`'s
-  `SPECIFIER` map must emit the right import in scaffolded configs.
+  the barrel and shipped as subpaths: `oxfmt.ts` → `/oxfmt`, `plugins/tailwind.ts` → `/tailwind`.
+  `cli/` is the `oxlint-config` bin (`init`) — `cli/index.ts` with the scaffolded
+  config strings in `cli/templates.ts`. Its tsconfig is self-contained; there is no
+  root `tsconfig`.
+  A new subpath needs a tsdown entry **and** an `exports` entry — and the templates
+  in `cli/templates.ts` must import from the right specifier in scaffolded configs.
 - `oxlint.config.ts` / `oxfmt.config.ts` — the root dogfoods the config from
   `packages/oxlint-config/src`. Do **not** point these at built `dist`; that would
   make `pnpm check` require a build first.
 - `playground/` — Next.js app consuming the config via `workspace:*`. Test bed for
   plugin auto-detection. Smoke-test with
-  `pnpm build && pnpm --filter @playground/next run lint`.
+  `pnpm --filter @letstri/oxlint-config build && pnpm --filter @playground/next run lint`.
 
 ## Before finishing
 
+The root has no `build` script; build the package directly.
+
 ```bash
-pnpm build
+pnpm --filter @letstri/oxlint-config build
 pnpm check   # lint + check-types + format:check
 ```
 

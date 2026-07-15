@@ -2,8 +2,8 @@ import process from 'node:process'
 
 import { defineConfig } from 'oxlint'
 
-import type { OxlintConfig } from './oxlint.ts'
-import { getInstalledPackages } from './utils.ts'
+import type { OxlintConfig } from '../oxlint.ts'
+import { getInstalledPackages } from '../utils.ts'
 
 const TAILWIND_PLUGIN = 'oxlint-tailwindcss'
 
