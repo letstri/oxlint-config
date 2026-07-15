@@ -6,7 +6,12 @@ Opinionated, shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) + [oxf
 npx @letstri/oxlint-config init
 ```
 
-**[Install](#install) · [Usage](#usage) · [Plugins](#plugins) · [Overrides](#overrides) · [Tailwind](#tailwind) · [Editors](#editor-extensions)**
+- [Install](#install)
+- [Usage](#usage)
+- [Plugins](#plugins)
+- [Overrides](#overrides)
+- [Tailwind](#tailwind)
+- [Editors](#editor-extensions)
 
 ## Install
 
