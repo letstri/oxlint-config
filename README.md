@@ -1,28 +1,26 @@
 # Oxlint and Oxfmt configs
 
-Opinionated, shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) and [oxfmt](https://oxc.rs) config, in the spirit of [@antfu/eslint-config](https://github.com/antfu/eslint-config).
+Opinionated, shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) + [oxfmt](https://oxc.rs) config — one `init` and you're set.
+
+```bash
+npx @letstri/oxlint-config init
+```
+
+**[Install](#install) · [Usage](#usage) · [Plugins](#plugins) · [Overrides](#overrides) · [Tailwind](#tailwind) · [Editors](#editor-extensions)**
 
 ## Install
 
 ```bash
 npm i -D @letstri/oxlint-config oxlint oxfmt
-```
-
-Scaffold the configs and editor settings:
-
-```bash
 npx oxlint-config init
 ```
 
-`init` prompts for what to set up. Flags skip the prompt (`--oxlint`, `--oxfmt`,
-`--tailwind`, `--vscode`, `--zed`); with no flags in a non-interactive shell it
-sets up everything. Existing config files are kept unless you pass `--force`;
-editor settings are deep-merged into your current ones.
+`init` prompts for what to scaffold, or take flags to skip the prompt:
+`--oxlint`, `--oxfmt`, `--vscode`, `--zed` (with none in a non-interactive shell
+it does all), plus `--force` to overwrite existing files. It also offers to
+install any missing dependency (`oxlint`, `oxfmt`) with your package manager.
 
-If `oxlint`, `oxfmt` (or `oxlint-tailwindcss`, when you add Tailwind) are missing
-from the project, `init` offers to install them with your package manager
-(detected from the lockfile). `--tailwind` scaffolds the oxlint config with
-`tailwindConfig()` and asks for your Tailwind entry CSS path.
+See [Tailwind](#tailwind) to add class linting.
 
 ### Editor extensions
 
@@ -96,6 +94,9 @@ import { tailwindConfig } from '@letstri/oxlint-config/tailwind'
 
 export default config(tailwindConfig({ entryPoint: 'app/globals.css' }))
 ```
+
+`oxlint-config init --tailwind` scaffolds this for you and asks for the entry CSS
+path.
 
 `oxlint-tailwindcss` is an **optional peer dependency** — install it yourself
 (`pnpm add -D oxlint-tailwindcss`); `tailwindConfig()` throws if it's missing.
