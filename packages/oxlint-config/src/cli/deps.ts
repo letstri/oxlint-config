@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, rmSync } from 'node:fs'
 import { resolve } from 'node:path'
 import process from 'node:process'
 
@@ -7,6 +7,22 @@ import { addDevDependency, detectPackageManager, removeDependency } from 'nypm'
 
 import { getInstalledPackages } from '../utils.ts'
 import { log } from './log.ts'
+
+const ESLINT_CONFIG_FILES = [
+  'eslint.config.js',
+  'eslint.config.mjs',
+  'eslint.config.cjs',
+  'eslint.config.ts',
+  'eslint.config.mts',
+  'eslint.config.cts',
+  '.eslintrc',
+  '.eslintrc.js',
+  '.eslintrc.cjs',
+  '.eslintrc.json',
+  '.eslintrc.yml',
+  '.eslintrc.yaml',
+  '.eslintignore',
+]
 
 // A workspace root: adding lands in the root, so it needs the `--workspace-root`
 // (pnpm) / `--workspaces` (npm/yarn/bun) flag, else pnpm aborts with ADDING_TO_ROOT.
@@ -87,5 +103,13 @@ export async function removeEslint(flags: Set<string>, interactive: boolean): Pr
     log(`removed: ${found.join(', ')}`)
   } catch {
     log(`Removal failed. Remove them yourself:\n  ${found.join(', ')}`)
+  }
+
+  const configs = ESLINT_CONFIG_FILES.filter(file => existsSync(resolve(cwd, file)))
+  for (const file of configs) {
+    rmSync(resolve(cwd, file))
+  }
+  if (configs.length > 0) {
+    log(`removed: ${configs.join(', ')}`)
   }
 }
